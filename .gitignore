@@ -1,0 +1,5 @@
+# macOS: служебные файлы
+.DS_Store
+
+# VS Code: личные настройки
+.vscode/

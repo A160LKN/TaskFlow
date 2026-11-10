@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskFlow — трекер задач</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Размытые цветные пятна на фоне -->
+    <div class="bg-blob bg-blob--1"></div>
+    <div class="bg-blob bg-blob--2"></div>
+
+    <main class="app" data-testid="app">
+      <!-- Шапка: название и переключатели -->
+      <header class="app__header">
+        <div>
+          <h1 class="app__title">TaskFlow</h1>
+          <p class="app__subtitle" data-i18n="subtitle">
+            Планируй. Делай. Отмечай.
+          </p>
+        </div>
+        <div class="app__controls">
+          <button
+            class="icon-btn"
+            id="lang-toggle"
+            type="button"
+            data-testid="lang-toggle"
+            aria-label="Switch language"
+          >
+            EN
+          </button>
+          <button
+            class="icon-btn"
+            id="theme-toggle"
+            type="button"
+            data-testid="theme-toggle"
+            aria-label="Toggle theme"
+          >
+            <!-- Солнце: показывается в тёмной теме -->
+            <svg
+              class="icon-sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+              />
+            </svg>
+            <!-- Луна: показывается в светлой теме -->
+            <svg
+              class="icon-moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Прогресс выполнения -->
+      <section class="progress" aria-live="polite">
+        <div class="progress__info">
+          <span id="progress-text" data-testid="progress-text"></span>
+          <span
+            class="progress__percent"
+            id="progress-percent"
+            data-testid="progress-percent"
+            >0%</span
+          >
+        </div>
+        <div class="progress__bar">
+          <div class="progress__fill" id="progress-fill"></div>
+        </div>
+      </section>
+
+      <!-- Форма добавления задачи -->
+      <form class="task-form" id="task-form" data-testid="task-form" novalidate>
+        <input
+          class="task-form__input"
+          id="task-input"
+          type="text"
+          maxlength="120"
+          autocomplete="off"
+          data-testid="task-input"
+          data-i18n-placeholder="inputPlaceholder"
+        />
+        <select
+          class="task-form__select"
+          id="task-priority"
+          data-testid="task-priority"
+        >
+          <option value="low" data-i18n="priorityLow">Низкий</option>
+          <option value="medium" data-i18n="priorityMedium" selected>
+            Средний
+          </option>
+          <option value="high" data-i18n="priorityHigh">Высокий</option>
+        </select>
+        <button
+          class="btn btn--primary"
+          type="submit"
+          data-testid="add-button"
+          data-i18n="add"
+        >
+          Добавить
+        </button>
+      </form>
+      <p
+        class="task-form__error"
+        id="form-error"
+        data-testid="form-error"
+        role="alert"
+      ></p>
+
+      <!-- Фильтры и поиск -->
+      <div class="toolbar">
+        <div class="filters" id="filters">
+          <button
+            class="filter is-active"
+            type="button"
+            data-filter="all"
+            data-testid="filter-all"
+            data-i18n="filterAll"
+          >
+            Все
+          </button>
+          <button
+            class="filter"
+            type="button"
+            data-filter="active"
+            data-testid="filter-active"
+            data-i18n="filterActive"
+          >
+            Активные
+          </button>
+          <button
+            class="filter"
+            type="button"
+            data-filter="done"
+            data-testid="filter-done"
+            data-i18n="filterDone"
+          >
+            Выполненные
+          </button>
+        </div>
+        <input
+          class="search"
+          id="search"
+          type="search"
+          data-testid="search"
+          data-i18n-placeholder="searchPlaceholder"
+        />
+      </div>
+
+      <!-- Список задач: заполняется из JavaScript -->
+      <ul class="task-list" id="task-list" data-testid="task-list"></ul>
+
+      <!-- Пустое состояние -->
+      <div class="empty" id="empty-state" data-testid="empty-state">
+        <div class="empty__icon">✓</div>
+        <p id="empty-text"></p>
+      </div>
+
+      <!-- Подвал: счётчик и очистка -->
+      <footer class="app__footer">
+        <span id="counter" data-testid="counter"></span>
+        <button
+          class="btn btn--ghost"
+          id="clear-done"
+          type="button"
+          data-testid="clear-done"
+          data-i18n="clearDone"
+        >
+          Удалить выполненные
+        </button>
+      </footer>
+    </main>
+
+    <!-- Уведомление с кнопкой «Отменить» -->
+    <div class="toast" id="toast" role="status" data-testid="toast">
+      <span data-i18n="deleted">Задача удалена</span>
+      <button
+        class="toast__undo"
+        id="toast-undo"
+        type="button"
+        data-testid="toast-undo"
+        data-i18n="undo"
+      >
+        Отменить
+      </button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

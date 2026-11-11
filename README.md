@@ -4,6 +4,8 @@
 
 **Демо:** https://a160lkn.github.io/TaskFlow/
 
+**Автотесты:** [taskflow-autotests](https://github.com/A160LKN/taskflow-autotests) — 21 UI-тест на Python, Selenium и pytest.
+
 ## Возможности
 
 - добавление задач с приоритетом и проверкой ввода;

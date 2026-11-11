@@ -2,7 +2,7 @@
 
 Трекер задач на чистом HTML, CSS и JavaScript — без фреймворков и библиотек.
 
-**Демо:** https://a160lkn.github.io/taskflow/
+**Демо:** https://a160lkn.github.io/TaskFlow/
 
 ## Возможности
 
